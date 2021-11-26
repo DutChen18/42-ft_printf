@@ -1,6 +1,5 @@
 SRC=\
 	ft_printf.c \
-	ft_print.c \
 	ft_parse.c \
 	ft_util.c
 INC=\

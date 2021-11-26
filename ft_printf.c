@@ -4,24 +4,9 @@
 static int
 	ft_print(t_sink *sink, t_flags *flags, va_list *args)
 {
-	if (flags->format == 'c')
-		return (ft_print_str(sink, flags, args));
-	if (flags->format == 's')
-		return (ft_print_str(sink, flags, args));
-	if (flags->format == 'p')
-		return (ft_print_nbr(sink, flags, args));
-	if (flags->format == 'd')
-		return (ft_print_nbr(sink, flags, args));
-	if (flags->format == 'i')
-		return (ft_print_nbr(sink, flags, args));
-	if (flags->format == 'u')
-		return (ft_print_nbr(sink, flags, args));
-	if (flags->format == 'x')
-		return (ft_print_nbr(sink, flags, args));
-	if (flags->format == 'X')
-		return (ft_print_nbr(sink, flags, args));
-	if (flags->format == '%')
-		return (ft_print_str(sink, flags, args));
+	(void) sink;
+	(void) flags;
+	(void) args;
 	return (-1);
 }
 
