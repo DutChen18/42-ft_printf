@@ -35,11 +35,9 @@ struct s_sink
 	int	fd;
 };
 
-int	ft_print_str(t_sink *sink, t_flags *flags, va_list *args);
-int	ft_print_nbr(t_sink *sink, t_flags *flags, va_list *args);
-int	ft_parse(t_flags *flags, const char **fmt, va_list *args);
 int	ft_xwrite(t_sink *sink, const char *str, size_t size);
 int	ft_xwrite_rep(t_sink *sink, char ch, size_t size);
+int	ft_parse(t_flags *flags, const char **fmt, va_list *args);
 int	ft_printf(const char *fmt, ...);
 
 #endif
