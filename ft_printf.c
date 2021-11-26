@@ -1,37 +1,28 @@
 #include "ft_printf.h"
-#include "libft/libft.h"
-
-static int
-	ft_print_pad(t_sink *sink, t_flags *flags, const char *str, size_t size)
-{
-	char	ch;
-
-	if (flags->flags & ft_printf_left)
-		if (ft_xwrite(sink, str, size) < 0)
-			return (-1);
-	ch = ' ';
-	if (~flags->flags & ft_printf_left)
-		if ((flags->flags & ft_printf_zero) && flags->precision < 0)
-			ch = '0';
-	while (flags->width - size > 0)
-	{
-		if (ft_xwrite(sink, &ch, 1) < 0)
-			return (-1);
-		size += 1;
-	}
-	if (~flags->flags & ft_printf_left)
-		if (ft_xwrite(sink, str, size) < 0)
-			return (-1);
-	return (0);
-}
+#include <unistd.h>
 
 static int
 	ft_print(t_sink *sink, t_flags *flags, va_list *args)
 {
-	const char	*str;
-
-	str = va_arg(*args, const char *);
-	return (ft_print_pad(sink, flags, str, ft_strlen(str)));
+	if (flags->format == 'c')
+		return (ft_print_str(sink, flags, args));
+	if (flags->format == 's')
+		return (ft_print_str(sink, flags, args));
+	if (flags->format == 'p')
+		return (ft_print_nbr(sink, flags, args));
+	if (flags->format == 'd')
+		return (ft_print_nbr(sink, flags, args));
+	if (flags->format == 'i')
+		return (ft_print_nbr(sink, flags, args));
+	if (flags->format == 'u')
+		return (ft_print_nbr(sink, flags, args));
+	if (flags->format == 'x')
+		return (ft_print_nbr(sink, flags, args));
+	if (flags->format == 'X')
+		return (ft_print_nbr(sink, flags, args));
+	if (flags->format == '%')
+		return (ft_print_str(sink, flags, args));
+	return (-1);
 }
 
 static int
@@ -68,7 +59,7 @@ int	ft_printf(const char *fmt, ...)
 	va_start(args, fmt);
 	sink.type = ft_printf_fd;
 	sink.size = 0;
-	sink.fd = 0;
+	sink.fd = 1;
 	size = ft_vxprintf(&sink, fmt, &args);
 	va_end(args);
 	return (size);
