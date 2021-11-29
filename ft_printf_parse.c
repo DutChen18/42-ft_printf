@@ -4,6 +4,11 @@
 static void
 	ft_printf_parse_flags(t_flags *flags, const char **fmt)
 {
+	flags->left = 0;
+	flags->sign = 0;
+	flags->space = 0;
+	flags->alt = 0;
+	flags->zero = 0;
 	while (1)
 	{
 		if (**fmt == '-')

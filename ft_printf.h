@@ -8,19 +8,19 @@ typedef struct s_sink	t_sink;
 
 struct s_flags
 {
-	int	left: 1;
-	int	zero: 1;
-	int	alt: 1;
-	int	space: 1;
-	int	sign: 1;
-	int	width;
-	int	precision;
-	int	format;
+	unsigned int	left: 1;
+	unsigned int	zero: 1;
+	unsigned int	alt: 1;
+	unsigned int	space: 1;
+	unsigned int	sign: 1;
+	int				width;
+	int				precision;
+	int				format;
 };
 
 struct s_sink
 {
-	int	pad;
+	int	_;
 };
 
 int	ft_printf_strlen(const char *str);
