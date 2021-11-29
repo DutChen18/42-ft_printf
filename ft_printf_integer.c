@@ -38,11 +38,11 @@ static int
 	b_size = ft_printf_strlen(b);
 	precision = ft_printf_pad_init(flags->precision, &size, a_size, b_size);
 	tmp = " 0"[flags->zero && flags->precision < 0];
-	if (flags->zero && ft_printf_write(sink, b, b_size) < 0)
+	if (tmp == '0' && ft_printf_write(sink, b, b_size) < 0)
 		return (-1);
 	if (!flags->left && ft_printf_repeat(sink, tmp, flags->width - size) < 0)
 		return (-1);
-	if (!flags->zero && ft_printf_write(sink, b, b_size) < 0)
+	if (tmp == ' ' && ft_printf_write(sink, b, b_size) < 0)
 		return (-1);
 	if (ft_printf_repeat(sink, '0', precision - a_size) < 0)
 		return (-1);
@@ -66,10 +66,10 @@ int
 		ft_printf_atoi(&ptr, (unsigned int) -value, "0123456789", 10);
 	if (value >= 0)
 		ft_printf_atoi(&ptr, value, "0123456789", 10);
-	if (flags->space && value >= 0)
-		return (ft_printf_pad(sink, flags, ptr, " "));
 	if (flags->sign && value >= 0)
 		return (ft_printf_pad(sink, flags, ptr, "+"));
+	if (flags->space && value >= 0)
+		return (ft_printf_pad(sink, flags, ptr, " "));
 	if (value < 0)
 		return (ft_printf_pad(sink, flags, ptr, "-"));
 	return (ft_printf_pad(sink, flags, ptr, ""));
