@@ -50,7 +50,7 @@ static int
 		return (-1);
 	if (flags->left && ft_printf_repeat(sink, ' ', flags->width - size) < 0)
 		return (-1);
-	if (flags->width > size)
+	if (flags->width > (unsigned int) size)
 		return (flags->width);
 	return (size);
 }

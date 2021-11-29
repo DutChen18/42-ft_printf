@@ -13,14 +13,14 @@ struct s_flags
 	unsigned int	alt: 1;
 	unsigned int	space: 1;
 	unsigned int	sign: 1;
-	int				width;
+	unsigned int	width;
 	int				precision;
 	int				format;
 };
 
 struct s_sink
 {
-	int	_;
+	int	fd;
 };
 
 int	ft_printf_strlen(const char *str);

@@ -28,44 +28,44 @@ static void
 }
 
 static int
-	ft_printf_parse_int(const char **fmt, va_list *args)
+	ft_printf_parse_int(int *v, const char **fmt, va_list *args)
 {
-	int	v;
-
 	if (**fmt == '*')
 	{
 		*fmt += 1;
-		return (va_arg(*args, int));
+		*v = va_arg(*args, int);
+		return (0);
 	}
-	v = 0;
+	*v = 0;
 	while (**fmt >= '0' && **fmt <= '9')
 	{
-		if (v > INT_MAX / 10 || (v * 10 > INT_MAX - (**fmt - '0')))
-			return (INT_MAX);
-		v = v * 10 + (**fmt - '0');
+		if (*v > INT_MAX / 10 || (*v * 10 > INT_MAX - (**fmt - '0')))
+			return (-1);
+		*v = *v * 10 + (**fmt - '0');
 		*fmt += 1;
 	}
-	return (v);
+	return (0);
 }
 
 int
 	ft_printf_parse(t_flags *flags, const char **fmt, va_list *args)
 {
+	int	tmp;
+
 	ft_printf_parse_flags(flags, fmt);
-	flags->width = ft_printf_parse_int(fmt, args);
-	if (flags->width == INT_MAX || flags->width <= INT_MIN + 1)
+	if (ft_printf_parse_int(&tmp, fmt, args) < 0)
 		return (-1);
-	if (flags->width < 0)
+	flags->width = tmp;
+	if (tmp < 0)
 	{
 		flags->left = 1;
-		flags->width = -flags->width;
+		flags->width = -tmp;
 	}
 	flags->precision = -1;
 	if (**fmt == '.')
 	{
 		*fmt += 1;
-		flags->precision = ft_printf_parse_int(fmt, args);
-		if (flags->precision == INT_MAX)
+		if (ft_printf_parse_int(&flags->precision, fmt, args) < 0)
 			return (-1);
 	}
 	flags->format = **fmt;

@@ -15,8 +15,7 @@ int
 int
 	ft_printf_write(t_sink *sink, const char *str, int size)
 {
-	(void) sink;
-	return (write(1, str, size));
+	return (write(sink->fd, str, size));
 }
 
 int

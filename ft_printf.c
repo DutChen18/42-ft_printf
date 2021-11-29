@@ -54,6 +54,7 @@ int
 	int		size;
 
 	va_start(args, fmt);
+	sink.fd = 1;
 	size = ft_printf_vxprintf(&sink, fmt, &args);
 	va_end(args);
 	return (size);
