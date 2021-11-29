@@ -26,25 +26,24 @@ static int
 	int		tmp;
 
 	size = 0;
-	while (*fmt)
+	while (1)
 	{
-		if (*fmt == '%')
-		{
-			fmt += 1;
-			if (ft_printf_parse(&flags, &fmt, args) < 0)
-				return (-1);
-			tmp = ft_printf_print(sink, &flags, args);
-		}
-		else
-		{
-			tmp = ft_printf_write(sink, fmt, 1);
-			fmt += 1;
-		}
+		tmp = 0;
+		while (fmt[tmp] && fmt[tmp] != '%')
+			tmp += 1;
+		if (ft_printf_write(sink, fmt, tmp) < 0)
+			return (-1);
+		size += tmp;
+		if (!fmt[tmp])
+			return (size);
+		fmt += tmp + 1;
+		if (ft_printf_parse(&flags, &fmt, args) < 0)
+			return (-1);
+		tmp = ft_printf_print(sink, &flags, args);
 		if (tmp < 0)
 			return (-1);
 		size += tmp;
 	}
-	return (size);
 }
 
 int

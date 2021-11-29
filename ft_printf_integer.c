@@ -3,24 +3,26 @@
 static void
 	ft_printf_atoi(char **buf, size_t value, const char *charset, size_t base)
 {
-	if (value >= base)
-		ft_printf_atoi(buf, value / base, charset, base);
-	if (value != 0)
+	*buf -= 1;
+	**buf = '\0';
+	while (value > 0)
 	{
+		*buf -= 1;
 		**buf = charset[value % base];
-		*buf += 1;
+		value /= base;
 	}
 }
 
-static void
-	ft_printf_init(int *precision, int *size, int a_size, int b_size)
+static int
+	ft_printf_pad_init(int precision, int *size, int a_size, int b_size)
 {
-	if (*precision < 0)
-		*precision = 1;
-	if (*precision > a_size)
-		*size = *precision + b_size;
+	if (precision < 0)
+		precision = 1;
+	if (precision > a_size)
+		*size = precision + b_size;
 	else
 		*size = a_size + b_size;
+	return (precision);
 }
 
 static int
@@ -34,12 +36,13 @@ static int
 
 	a_size = ft_printf_strlen(a);
 	b_size = ft_printf_strlen(b);
-	precision = flags->precision;
-	ft_printf_init(&precision, &size, a_size, b_size);
+	precision = ft_printf_pad_init(flags->precision, &size, a_size, b_size);
 	tmp = " 0"[flags->zero && flags->precision < 0];
+	if (flags->zero && ft_printf_write(sink, b, b_size) < 0)
+		return (-1);
 	if (!flags->left && ft_printf_repeat(sink, tmp, flags->width - size) < 0)
 		return (-1);
-	if (ft_printf_write(sink, b, b_size) < 0)
+	if (!flags->zero && ft_printf_write(sink, b, b_size) < 0)
 		return (-1);
 	if (ft_printf_repeat(sink, '0', precision - a_size) < 0)
 		return (-1);
@@ -58,10 +61,9 @@ int
 	char	buf[256];
 	char	*ptr;
 
-	buf[255] = '\0';
-	ptr = buf + 255;
+	ptr = buf + 256;
 	if (value < 0)
-		ft_printf_atoi(&ptr, -value, "0123456789", 10);
+		ft_printf_atoi(&ptr, (unsigned int) -value, "0123456789", 10);
 	if (value >= 0)
 		ft_printf_atoi(&ptr, value, "0123456789", 10);
 	if (flags->space && value >= 0)
@@ -79,17 +81,16 @@ int
 	char		buf[256];
 	char		*ptr;
 
-	buf[255] = '\0';
-	ptr = buf + 255;
+	ptr = buf + 256;
 	if (flags->format == 'u')
 		ft_printf_atoi(&ptr, value, "0123456789", 10);
 	if (flags->format == 'x' || flags->format == 'p')
 		ft_printf_atoi(&ptr, value, "0123456789abcdef", 16);
 	if (flags->format == 'X')
 		ft_printf_atoi(&ptr, value, "0123456789ABCDEF", 16);
-	if (flags->format == 'x' && flags->alt)
+	if (flags->format == 'x' && flags->alt && value != 0)
 		return (ft_printf_pad(sink, flags, ptr, "0x"));
-	if (flags->format == 'X' && flags->alt)
+	if (flags->format == 'X' && flags->alt && value != 0)
 		return (ft_printf_pad(sink, flags, ptr, "0X"));
 	if (flags->format == 'p')
 		return (ft_printf_pad(sink, flags, ptr, "0x"));

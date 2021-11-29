@@ -35,10 +35,7 @@ static int
 	if (**fmt == '*')
 	{
 		*fmt += 1;
-		v = va_arg(*args, int);
-		if (v < 0)
-			return (INT_MAX);
-		return (v);
+		return (va_arg(*args, int));
 	}
 	v = 0;
 	while (**fmt >= '0' && **fmt <= '9')
@@ -56,8 +53,13 @@ int
 {
 	ft_printf_parse_flags(flags, fmt);
 	flags->width = ft_printf_parse_int(fmt, args);
-	if (flags->width == INT_MAX)
+	if (flags->width == INT_MAX || flags->width <= INT_MIN + 1)
 		return (-1);
+	if (flags->width < 0)
+	{
+		flags->left = 1;
+		flags->width = -flags->width;
+	}
 	flags->precision = -1;
 	if (**fmt == '.')
 	{

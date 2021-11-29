@@ -22,16 +22,27 @@ int
 int
 	ft_printf_repeat(t_sink *sink, char ch, int size)
 {
-	int	i;
+	char	buf[256];
+	int		i;
 
 	i = 0;
-	while (i < size)
+	while (i < 256)
 	{
-		if (ft_printf_write(sink, &ch, 1) < 0)
-			return (-1);
+		buf[i] = ch;
 		i += 1;
 	}
-	if (0 < size)
-		return (size);
-	return (0);
+	i = 0;
+	while (size - i > 256)
+	{
+		if (ft_printf_write(sink, buf, 256) < 0)
+			return (-1);
+		i += 256;
+	}
+	if (i < size)
+	{
+		if (ft_printf_write(sink, buf, size - i) < 0)
+			return (-1);
+		i += size - i;
+	}
+	return (i);
 }
