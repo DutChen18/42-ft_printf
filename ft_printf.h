@@ -6,23 +6,13 @@
 typedef struct s_flags	t_flags;
 typedef struct s_sink	t_sink;
 
-enum
-{
-	ft_printf_left	= 0x01,
-	ft_printf_zero	= 0x02,
-	ft_printf_alt	= 0x04,
-	ft_printf_space	= 0x08,
-	ft_printf_sign	= 0x10
-};
-
-enum
-{
-	ft_printf_fd
-};
-
 struct s_flags
 {
-	int	flags;
+	int	left: 1;
+	int	zero: 1;
+	int	alt: 1;
+	int	space: 1;
+	int	sign: 1;
 	int	width;
 	int	precision;
 	int	format;
@@ -30,14 +20,17 @@ struct s_flags
 
 struct s_sink
 {
-	int	type;
-	int	size;
-	int	fd;
+	int	pad;
 };
 
-int	ft_xwrite(t_sink *sink, const char *str, size_t size);
-int	ft_xwrite_rep(t_sink *sink, char ch, size_t size);
-int	ft_parse(t_flags *flags, const char **fmt, va_list *args);
+int	ft_printf_strlen(const char *str);
+int	ft_printf_write(t_sink *sink, const char *str, int size);
+int	ft_printf_repeat(t_sink *sink, char ch, int size);
+int	ft_printf_chr(t_sink *sink, t_flags *flags, int value);
+int	ft_printf_str(t_sink *sink, t_flags *flags, const char *value);
+int	ft_printf_int(t_sink *sink, t_flags *flags, int value);
+int	ft_printf_pos(t_sink *sink, t_flags *flags, size_t value);
+int	ft_printf_parse(t_flags *flags, const char **fmt, va_list *args);
 int	ft_printf(const char *fmt, ...);
 
 #endif

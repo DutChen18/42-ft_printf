@@ -1,51 +1,61 @@
 #include "ft_printf.h"
-#include <unistd.h>
 
 static int
-	ft_print(t_sink *sink, t_flags *flags, va_list *args)
+	ft_printf_print(t_sink *sink, t_flags *flags, va_list *args)
 {
-	(void) sink;
-	(void) flags;
-	(void) args;
+	if (flags->format == 'c')
+		return (ft_printf_chr(sink, flags, va_arg(*args, int)));
+	if (flags->format == 's')
+		return (ft_printf_str(sink, flags, va_arg(*args, const char *)));
+	if (flags->format == '%')
+		return (ft_printf_chr(sink, flags, '%'));
+	if (flags->format == 'd' || flags->format == 'i')
+		return (ft_printf_int(sink, flags, va_arg(*args, int)));
+	if (flags->format == 'u' || flags->format == 'x' || flags->format == 'X')
+		return (ft_printf_pos(sink, flags, va_arg(*args, unsigned int)));
+	if (flags->format == 'p')
+		return (ft_printf_pos(sink, flags, (size_t) va_arg(*args, void *)));
 	return (-1);
 }
 
 static int
-	ft_vxprintf(t_sink *sink, const char *fmt, va_list *args)
+	ft_printf_vxprintf(t_sink *sink, const char *fmt, va_list *args)
 {
 	t_flags	flags;
+	int		size;
+	int		tmp;
 
+	size = 0;
 	while (*fmt)
 	{
 		if (*fmt == '%')
 		{
 			fmt += 1;
-			if (ft_parse(&flags, &fmt, args) < 0)
+			if (ft_printf_parse(&flags, &fmt, args) < 0)
 				return (-1);
-			if (ft_print(sink, &flags, args) < 0)
-				return (-1);
+			tmp = ft_printf_print(sink, &flags, args);
 		}
 		else
 		{
-			if (ft_xwrite(sink, fmt, 1) < 0)
-				return (-1);
+			tmp = ft_printf_write(sink, fmt, 1);
 			fmt += 1;
 		}
+		if (tmp < 0)
+			return (-1);
+		size += tmp;
 	}
-	return (sink->size);
+	return (size);
 }
 
-int	ft_printf(const char *fmt, ...)
+int
+	ft_printf(const char *fmt, ...)
 {
 	va_list	args;
 	t_sink	sink;
 	int		size;
 
 	va_start(args, fmt);
-	sink.type = ft_printf_fd;
-	sink.size = 0;
-	sink.fd = 1;
-	size = ft_vxprintf(&sink, fmt, &args);
+	size = ft_printf_vxprintf(&sink, fmt, &args);
 	va_end(args);
 	return (size);
 }

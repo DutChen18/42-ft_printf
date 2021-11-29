@@ -1,32 +1,29 @@
 #include "ft_printf.h"
 #include <limits.h>
 
-static int
-	parse_flags(const char **fmt)
+static void
+	ft_printf_parse_flags(t_flags *flags, const char **fmt)
 {
-	int	flags;
-
-	flags = 0;
 	while (1)
 	{
 		if (**fmt == '-')
-			flags |= ft_printf_left;
+			flags->left = 1;
 		else if (**fmt == '+')
-			flags |= ft_printf_sign;
+			flags->sign = 1;
 		else if (**fmt == ' ')
-			flags |= ft_printf_space;
+			flags->space = 1;
 		else if (**fmt == '#')
-			flags |= ft_printf_alt;
+			flags->alt = 1;
 		else if (**fmt == '0')
-			flags |= ft_printf_zero;
+			flags->zero = 1;
 		else
-			return (flags);
+			return ;
 		*fmt += 1;
 	}
 }
 
 static int
-	parse_int(const char **fmt, va_list *args)
+	ft_printf_parse_int(const char **fmt, va_list *args)
 {
 	int	v;
 
@@ -50,17 +47,17 @@ static int
 }
 
 int
-	ft_parse(t_flags *flags, const char **fmt, va_list *args)
+	ft_printf_parse(t_flags *flags, const char **fmt, va_list *args)
 {
-	flags->flags = parse_flags(fmt);
-	flags->width = parse_int(fmt, args);
+	ft_printf_parse_flags(flags, fmt);
+	flags->width = ft_printf_parse_int(fmt, args);
 	if (flags->width == INT_MAX)
 		return (-1);
 	flags->precision = -1;
 	if (**fmt == '.')
 	{
 		*fmt += 1;
-		flags->precision = parse_int(fmt, args);
+		flags->precision = ft_printf_parse_int(fmt, args);
 		if (flags->precision == INT_MAX)
 			return (-1);
 	}
