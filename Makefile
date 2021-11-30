@@ -29,3 +29,7 @@ fclean: clean
 
 norm:
 	norminette $(SRC) $(INC)
+
+test: bonus
+	if [ ! -d ~/goinfre/test42 ]; then git clone https://github.com/DutChen18/test42 ~/goinfre/test42; fi
+	(cd ~/goinfre/test42 && ./test.py test ft_printf $(shell pwd)/libftprintf.a)
